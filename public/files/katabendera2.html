@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <title>Kata Bendera 2 | Zidan Sport</title>
+    <link rel="shortcut icon" href="/icons/logo.png" type="image/x-icon">
+    <script src="/files/lib/tailwind.js"></script>
+    <link rel="stylesheet" href="/files/css/index.css">
+    <link href='/files/css/boxicons.min.css' rel='stylesheet'>
+    <link href='/files/css/animate.min.css' rel='stylesheet'>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Audio -->
+    <audio id="short-bell" preload="auto">
+        <source src="/sounds/short-bell.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="long-bell">
+        <source src="/sounds/long-bell.mp3" type="audio/mpeg" />
+    </audio>
+
+    <div class="flex h-screen relative">
+
+        <div id="modal" class="fixed inset-0 bg-[#00000080] flex justify-center items-center z-[99] hidden"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-white p-6 shadow-md flex flex-col fixed h-screen">
+            <h1 class="text-xl font-bold mb-5 flex items-center">
+                <img src="/icons/logo.png" alt="Logo" class="w-8 h-8 mr-2"> ZIDAN SPORT
+            </h1>
+            <nav>
+                <ul>
+                    <li class="mb-3 hover:bg-blue-100 rounded-md p-2"><a href="/dashboard"
+                            class="flex items-center text-gray-600 hover:text-blue-400"><i
+                                class='bx bx-grid-alt mr-2'></i> Dashboard</a></li>
+                    <li class="mb-3 hover:bg-blue-100 rounded-md p-2"><a href="/kumite"
+                            class="flex items-center text-gray-600 hover:text-blue-400"><i
+                                class='bx bx-dice-2 mr-2'></i> Kumite</a></li>
+                    <li class="mb-3 hover:bg-blue-100 rounded-md p-2"><a href="/kata"
+                            class="flex items-center text-gray-600 hover:text-blue-400"><i class='bx bx-network-chart mr-2'></i> Kata</a>
+                    </li>
+                    <li class="mb-3 hover:bg-blue-100 rounded-md p-2"><a href="/kata2"
+                            class="flex items-center text-gray-600 hover:text-blue-400"><i
+                                class='bx bx-network-chart mr-2'></i> Kata 2</a></li>
+                    <li class="mb-3 bg-blue-100 rounded-md p-2"><a href="/katabendera2"
+                            class="flex items-center text-blue-400"><i class='bx bx-network-chart mr-2'></i> Kata Bendera 2</a>
+                    </li>
+                    <li class="mb-3 hover:bg-blue-100 rounded-md p-2"><a href="/katabendera"
+                            class="flex items-center text-gray-600 hover:text-blue-400"><i class='bx bx-flag mr-2'></i>
+                            Kata Bendera</a></li>
+                    <li class="mb-3 relative p-2">
+                        <button onclick="toggleDropdown()"
+                            class="flex items-center text-gray-600 w-full cursor-pointer hover:text-blue-400">
+                            <i class='bx bx-tv mr-2'></i> Scoreboard <i class='bx bx-chevron-down ml-auto'></i>
+                        </button>
+                                                <ul id="dropdownMenu" class="hidden bg-[#f5f5f5] mt-4 rounded-md p-2">
+                            <li class="mb-1"><a target="#1" href="/scoreboard/kumite"
+                                    class="block p-2 hover:bg-blue-100 hover:text-blue-400 text-gray-600 rounded">Kumite</a>
+                            </li>
+                            <li class="mb-1"><a target="#2" href="/scoreboard/kumite-2"
+                                    class="block p-2 hover:bg-blue-100 text-gray-600 hover:text-blue-400 rounded">Kumite
+                                    V2</a></li>
+                            <li class="mb-1"><a target="#3" href="/scoreboard/kata"
+                                    class="block p-2 hover:bg-blue-100 text-gray-600 hover:text-blue-400 rounded">Kata</a>
+                            </li>
+                              <li class="mb-1"><a target="#3" href="/scoreboard/kata2"
+                                      class="block p-2 hover:bg-blue-100 text-gray-600 hover:text-blue-400 rounded">Kata 2</a>
+                              </li>
+                            <li class="mb-1"><a target="#4" href="/scoreboard/katabendera"
+                                    class="block p-2 hover:bg-blue-100 text-gray-600 hover:text-blue-400 rounded">Kata
+                                    Bendera</a></li>
+                            <li><a target="#5" href="/scoreboard/katabendera-2"
+                                    class="block p-2 hover:bg-blue-100 text-gray-600 hover:text-blue-400 rounded">Kata
+                                    Bendera 2</a></li>
+                        </ul>
+                    </li>
+                    <li class="mb-3 hover:bg-red-100 rounded-md p-2"><a href="/"
+                            class="flex items-center text-gray-600 hover:text-red-400"><i
+                                class='bx bx-log-out mr-2'></i> Keluar</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 ml-64">
+            <div id="header" class="flex justify-between items-center bg-white rounded-lg p-4">
+                <h2 class="text-2xl font-semibold" id="title">KUMITE</h2>
+                <div class="flex hidden" id="match-handler">
+                    <div class="relative mr-30">
+                        <input value="" type="text" autocomplete="off" id="kata-name" placeholder="Pilih Kata..."
+                            class="text-gray-500 bg-white border border-[.1px] border-[#dddddd] py-2 px-4 rounded-lg shadow-md focus:outline-none w-[16em] text-lg"
+                            onfocus="document.getElementById('kata-dropdown').classList.remove('hidden')"
+                            onblur="setTimeout(() => { if(document.getElementById('kata-dropdown')) document.getElementById('kata-dropdown').classList.add('hidden') }, 200)"
+                            onkeyup="handlerFilterKata()">
+                        <ul id="kata-dropdown"
+                            class="absolute z-50 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-lg max-h-[50vh] overflow-y-auto hidden">
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('1. Anan')">1. Anan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('2. Anan Dai')">2. Anan Dai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('3. Ananko')">3. Ananko</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('4. Aoyagi')">4. Aoyagi</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('5. Bassai')">5. Bassai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('6. Bassai Dai')">6. Bassai Dai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('7. Bassai Sho')">7. Bassai Sho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('8. Chatanyara Kusanku')">8. Chatanyara Kusanku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('9. Chibana No Kushanku')">9. Chibana No Kushanku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('10. Chinte')">10. Chinte</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('11. Chinto')">11. Chinto</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('12. Enpi')">12. Enpi</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('13. Fukyugata Ichi')">13. Fukyugata Ichi</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('14. Fukyugata Ni')">14. Fukyugata Ni</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('15. Gankaku')">15. Gankaku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('16. Garyu')">16. Garyu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('17. Gekisai (Geksai) 1')">17. Gekisai (Geksai) 1</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('18. Gekisai (Geksai) 2')">18. Gekisai (Geksai) 2</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('19. Gojushiho')">19. Gojushiho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('20. Gojushiho Dai')">20. Gojushiho Dai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('21. Gojushiho Sho')">21. Gojushiho Sho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('22. Hakucho')">22. Hakucho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('23. Hangetsu')">23. Hangetsu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('24. Haufa (Haffa)')">24. Haufa (Haffa)</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('25. Heian Shodan')">25. Heian Shodan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('26. Heian Nidan')">26. Heian Nidan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('27. Heian Sandan')">27. Heian Sandan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('28. Heian Yondan')">28. Heian Yondan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('29. Heian Godan')">29. Heian Godan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('30. Heiku')">30. Heiku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('31. Ishimine Bassai')">31. Ishimine Bassai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('32. Itosu Rohai Shodan')">32. Itosu Rohai Shodan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('33. Itosu Rohai Nidan')">33. Itosu Rohai Nidan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('34. Itosu Rohai Sandan')">34. Itosu Rohai Sandan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('35. Jiin')">35. Jiin</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('36. Jion')">36. Jion</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('37. Jitte')">37. Jitte</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('38. Juroku')">38. Juroku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('39. Kanchin')">39. Kanchin</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('40. Kanku Dai')">40. Kanku Dai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('41. Kanku Sho')">41. Kanku Sho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('42. Kanshu')">42. Kanshu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('43. Kishimoto No Kushanku')">43. Kishimoto No Kushanku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('44. Kousoukun')">44. Kousoukun</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('45. Kousoukun Dai')">45. Kousoukun Dai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('46. Kousoukun Sho')">46. Kousoukun Sho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('47. Kururunfa')">47. Kururunfa</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('48. Kusanku')">48. Kusanku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('49. Kyan No Chinto')">49. Kyan No Chinto</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('50. Kyan No Wanshu')">50. Kyan No Wanshu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('51. Matsukaze')">51. Matsukaze</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('52. Matsumura Bassai')">52. Matsumura Bassai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('53. Matsumura Rohai')">53. Matsumura Rohai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('54. Meikyo')">54. Meikyo</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('55. Myojo')">55. Myojo</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('56. Naifanchin Shodan')">56. Naifanchin Shodan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('57. Naifanchin Nidan')">57. Naifanchin Nidan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('58. Naifanchin Sandan')">58. Naifanchin Sandan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('59. Naihanchi')">59. Naihanchi</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('60. Nijushiho')">60. Nijushiho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('61. Nipaipo')">61. Nipaipo</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('62. Niseishi')">62. Niseishi</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('63. Ohan')">63. Ohan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('64. Ohan Dai')">64. Ohan Dai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('65. Oyadomari No Passai')">65. Oyadomari No Passai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('66. Pachu')">66. Pachu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('67. Paiku')">67. Paiku</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('68. Papuren')">68. Papuren</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('69. Passai')">69. Passai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('70. Pinan Shodan')">70. Pinan Shodan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('71. Pinan Nidan')">71. Pinan Nidan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('72. Pinan Sandan')">72. Pinan Sandan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('73. Pinan Yondan')">73. Pinan Yondan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('74. Pinan Godan')">74. Pinan Godan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('75. Rohai')">75. Rohai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('76. Saifa')">76. Saifa</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('77. Sanchin')">77. Sanchin</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('78. Sansai')">78. Sansai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('79. Sanseiru')">79. Sanseiru</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('80. Sanseru')">80. Sanseru</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('81. Seichin')">81. Seichin</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('82. Seienchin (Seiyunchin)')">82. Seienchin (Seiyunchin)</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('83. Seipai')">83. Seipai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('84. Seiryu')">84. Seiryu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('85. Seishan')">85. Seishan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('86. Seisan (Sesan)')">86. Seisan (Sesan)</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('87. Shiho Kousoukun')">87. Shiho Kousoukun</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('88. Shinpa')">88. Shinpa</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('89. Shinsei')">89. Shinsei</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('90. Shisochin')">90. Shisochin</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('91. Sochin')">91. Sochin</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('92. Suparinpei')">92. Suparinpei</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('93. Tekki Shodan')">93. Tekki Shodan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('94. Tekki Nidan')">94. Tekki Nidan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('95. Tekki Sandan')">95. Tekki Sandan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('96. Tensho')">96. Tensho</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('97. Tomari Bassai')">97. Tomari Bassai</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('98. Unshu')">98. Unshu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('99. Unsu')">99. Unsu</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('100. Useishi')">100. Useishi</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('101. Wankan')">101. Wankan</li>
+                            <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-700"
+                                onclick="handlerSelectKataOption('102. Wanshu')">102. Wanshu</li>
+                        </ul>
+                    </div>
+                    <button class="p-2 px-[.68em] bg-red-600 text-white rounded-full hover:bg-red-500 flex items-center"
+                        onclick="handlerDeleteStageMatch()">
+                        <i class='bx bx-x text-2xl'></i>
+                    </button>
+                    <button
+                        class="py-2 px-3 bg-green-600 text-white rounded-lg hover:bg-green-500 flex items-center text-lg ml-2"
+                        onclick="handlerSaveMatch()">
+                        <i class='bx bx-save mr-2'></i> Simpan
+                    </button>
+                </div>
+            </div>
+
+            <div id="main-content" class="flex flex-col my-6 pb-6 min-h-[80vh] hidden">
+                <div class="flex justify-between mb-4">
+                    <div class="flex flex-row flex-1">
+                        <input type="text" id="search" placeholder="Cari..."
+                            class="text-gray-500 pl-3 bg-white border border-[.1px] border-[#dddddd] p-2 rounded w-1/3 shadow-md focus:outline-none"
+                            onkeyup="handlerFilterTable('category')">
+                    </div>
+                    <button id="creatematch"
+                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow mt-[1px] flex items-center mr-3 hidden"
+                        title="Buat pertandingan ..." onclick="handlerRenderFormModal()">
+                        <i class="bx bx-plus"></i>
+                    </button>
+                    <div id="category-container"></div>
+                    <select id="perPage"
+                        class="text-gray-500 bg-white border border-[.1px] border-[#dddddd] p-2 rounded shadow-md focus:outline-none"
+                        onchange="handlerRenderTable()">
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div class="flex flex-col mt-2">
+                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                            <table class="min-w-full text-sm text-gray-500 shadow-md overflow-hidden rounded-lg">
+                                <thead class="bg-white text-xs uppercase font-medium">
+                                    <tr>
+                                        <th>No</th>
+                                        <th scope="col" class="px-6 py-3 text-left tracking-wider"
+                                            onclick="handlerSortTable('arena')">
+                                            Tatami <i class="bx bx-sort">
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left tracking-wider"
+                                            onclick="handlerSortTable('category')">
+                                            Kategori <i class="bx bx-sort">
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left tracking-wider">
+                                            Peserta 1
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left tracking-wider">
+                                            Peserta 2
+                                        </th>
+                                        <th scope="col" class="px-3 py-3 text-left tracking-wider">
+                                            Aksi
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-[#f4f4f4]" id="table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-6 space-x-2" id="pagination"></div>
+            </div>
+
+            <div id="match-content" class="flex flex-col h-[calc(100vh-120px)] justify-between hidden">
+            </div>
+
+        </main>
+    </div>
+</body>
+<script src="/files/lib/index.js"></script>
+<script src="/files/lib/katabendera2.js"></script>
+
+</html>
+
+
+
+
+
+

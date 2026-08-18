@@ -1,0 +1,186 @@
+html {
+  font-size: 16px;
+  /* base — layout uses rem units; JS handles 77% scaling */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  font-family: "Ubuntu", "Open Sans", sans-serif, "Verdana";
+  overflow-x: hidden;
+  background-color: #fff;
+}
+
+body.bg-black {
+  background-color: #000 !important;
+}
+
+.scoreboard-screen {
+  width: 100%;
+  height: 100%;
+  /* Scaling is applied via JS on #scale-canvas wrapper */
+}
+
+.scoreboard-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Ensure each column takes up space but wraps on small screens */
+.scoreboard-row>div {
+  flex: 1 1 45%;
+  min-width: 280px;
+}
+
+/* Responsive point size using fixed values since JS handles scaling */
+.scoreboard-point {
+  font-size: 12em !important;
+}
+
+
+.scoreboard-bottom {
+  width: 100%;
+}
+
+.scoreboard-title {
+  font-size: 6em;
+}
+
+.scoreboard-subtitle {
+  font-size: 3.5em;
+}
+
+.scoreboard-point {
+  font-size: 12em !important;
+}
+
+
+.scoreboard-flag-label {
+  font-size: 1.8rem;
+}
+
+
+
+@keyframes fade {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.fade {
+  animation: fade 1s infinite;
+}
+
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 5rem;
+  font-weight: bold;
+  z-index: 9999;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s ease;
+  display: none;
+  padding-left: 5em;
+  padding-right: 5em;
+}
+
+/* Hide country column (Negara) in tables */
+th:nth-child(3),
+td:nth-child(3) {
+  display: none;
+}
+
+.confetti.show {
+  display: flex;
+  animation: fadeIn 0.5s forwards;
+}
+
+.confetti.hide {
+  animation: fadeOut 0.8s forwards;
+}
+
+#confetti-title {
+  font-size: 8rem;
+  font-weight: bold;
+  margin-bottom: 0;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+#confetti-desc {
+  font-size: 6rem;
+}
+
+tbody.bg-\[\#f4f4f4\],
+#table-body,
+#table-body tr {
+  background-color: #ffffff !important;
+}
+
+/* Hide country column (Negara) in tables */
+th:nth-child(3),
+td:nth-child(3) {
+  display: none;
+}
+
+
+
+.scoreboard-row img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ensure bottom flex container wraps on small screens */
+.scoreboard-bottom {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@keyframes blink-hard {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+.blink-hard {
+  animation: blink-hard 1s infinite;
+}
+
+@keyframes logo-dark-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+.animate-logo-dark-pulse {
+  animation: logo-dark-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

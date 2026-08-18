@@ -1,0 +1,36 @@
+CARA MENJALANKAN APLIKASI DI MACOS
+
+Prasyarat:
+Pastikan aplikasi Node.js sudah terinstall di perangkat MacOS Anda. 
+Jika belum, silakan download dan install dari web resminya: https://nodejs.org/
+
+Langkah-Langkah:
+1. Buka aplikasi "Terminal" di MacOS. 
+   (Cara termudah: tekan tombol "Command" + "Space" di keyboard, ketik "Terminal", lalu tekan Enter).
+
+2. Masuk ke folder aplikasi ini melalui Terminal. 
+   Caranya: ketik "cd " (ingat tambahkan spasi setelah cd), kemudian seret (drag & drop) folder utama aplikasi ini (folder "applikasi ZS") dari Finder ke jendela Terminal, lalu tekan Enter.
+
+3. Jika ini adalah pertama kalinya aplikasi dijalankan di MacOS tersebut, Anda perlu meng-install package pendukungnya. Di dalam terminal, ketik perintah berikut dan tekan Enter:
+   npm install
+
+4. Setelah proses install selesai, jalankan aplikasi dengan mengetik perintah berikut dan tekan Enter:
+   npm start
+
+5. Aplikasi sekarang sudah berjalan! Buka browser Anda (Safari, Chrome, dsb.) lalu ketikkan alamat:
+   http://localhost:3000
+   (Atau sesuaikan dengan port yang diatur pada aplikasi Anda).
+
+---------------------------------------------------------
+TIPS MENJALANKAN OTOMATIS DENGAN KLIK GANDA
+---------------------------------------------------------
+Saya juga telah membuatkan file bernama "start-macos.command" di dalam folder ini. File ini fungsinya seperti file ".bat" di Windows (bisa diklik ganda untuk menjalankan aplikasi).
+
+Namun, pertama kali Anda memindahkan folder ini ke MacOS, Anda harus memberikan izin akses agar file tersebut bisa di-klik ganda. Caranya (hanya perlu 1x):
+1. Buka Terminal
+2. Ketik: chmod +x 
+   (jangan lupa spasinya)
+3. Seret file "start-macos.command" dari Finder ke jendela Terminal
+4. Tekan Enter.
+
+Setelah itu, Anda cukup klik ganda file "start-macos.command" kapan pun Anda ingin membuka aplikasinya!

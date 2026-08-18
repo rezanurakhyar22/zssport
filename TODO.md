@@ -1,0 +1,4 @@
+- [x] Update services/db.js to support selecting database file via env var DB_FILE (default ./zsport.db)
+- [x] Update package.json scripts to add start:zsport1 and dev:zsport1 for Windows (set DB_FILE=./zsport1.db)
+- [x] Smoke test: run node index with default DB_FILE and confirm it connects
+- [x] Smoke test: run node index with DB_FILE=./zsport1.db and confirm it connects and tables are created
